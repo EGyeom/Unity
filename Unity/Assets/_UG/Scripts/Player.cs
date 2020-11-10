@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
         /*
          * switch(Input.inputString)
         {
@@ -49,34 +49,59 @@ public class Player : MonoBehaviour
         */
         
         if (Input.GetKeyDown(KeyCode.Space))
-            myRigidbody.AddForce(Vector3.up * 3f, ForceMode.Impulse);
+        {
+            //????? 여긴 왜 있는거임? ㅋㅋ루삥뽕
+        }
+           // myRigidbody.AddForce(Vector3.up * 3f, ForceMode.Impulse);
     }
 
     void FixedUpdate()
     {
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
-        
+
         //movement.Set(h, 0f, v);
         //movement = movement.normalized * speed * Time.deltaTime;
         //myRigidbody.MovePosition(transform.position + movement);
         Vector3 vec = new Vector3(h * speed, myRigidbody.velocity.y, v * speed);
         myRigidbody.velocity = vec;
 
+        //transform.Translate(h * speed * Time.deltaTime, 0, v * speed * Time.deltaTime);
+
+
         //범위지정으로 충돌처리
-        //if (transform.position.x >= 4.5f) transform.position = new Vector3(4.5f,transform.position.y, transform.position.z);
-        //if (transform.position.x <= -4.5f) transform.position = new Vector3(-4.5f, transform.position.y, transform.position.z);
-        //if (transform.position.z >= 4.5f) transform.position = new Vector3(transform.position.x, transform.position.y, 4.5f);
-        //if (transform.position.z <= -4.5f) transform.position = new Vector3(transform.position.x, transform.position.y, -4.5f);
-       
-        // Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
-        // viewPos.x = Mathf.Clamp01(viewPos.x);
-        // Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewPos);
-        // transform.position = worldPos;
+        /*
+        if (transform.position.x >= 4.5f) transform.position = new Vector3(4.5f,transform.position.y, transform.position.z);
+        if (transform.position.x <= -4.5f) transform.position = new Vector3(-4.5f, transform.position.y, transform.position.z);
+        if (transform.position.z >= 4.5f) transform.position = new Vector3(transform.position.x, transform.position.y, 4.5f);
+        if (transform.position.z <= -4.5f) transform.position = new Vector3(transform.position.x, transform.position.y, -4.5f);
 
-        //Vector3 vSize = Camera.main.WorldToViewportPoint(new Vector3(sizeX,sizeY,sizeZ));
-       
+        Vector3 temp = new Vector3(Mathf.Clamp(transform.position.x, -4.5f, 4.5f),
+                        transform.position.y,
+                        Mathf.Clamp(transform.position.z, -4.5f, 4.5f));
+        
+        transform.position = temp;
+        */
 
+        //카메라 범위 밖으로 안나가도록 하는것
+        
+         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
+         float ratioX = GetComponent<Collider>().bounds.extents.x / Screen.width;
+         float ratioZ = GetComponent<Collider>().bounds.extents.z / Screen.height;
+         viewPos.x = Mathf.Clamp(viewPos.x,ratioX,1f-ratioX);
+         viewPos.y = Mathf.Clamp(viewPos.y, ratioZ, 1f - ratioZ);
+         Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewPos);
+         transform.position = worldPos;
+       // if(Input.GetMouseButtonDown(0))
+       // {
+       //     Vector2 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);
+       //     position = Camera.main.ScreenToWorldPoint(position);
+       //
+       //     transform.position = position;
+       // }
+        //Cursor.SetCursor()
+
+        /*
         float HalfsizeX = Camera.main.orthographicSize * Screen.width / Screen.height;
         float HalfsizeY = Camera.main.orthographicSize;
         
@@ -86,6 +111,7 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -HalfsizeX + objsize.x, HalfsizeX - objsize.x),
                                          transform.position.y, 
                                          Mathf.Clamp(transform.position.z, -HalfsizeY + objsize.z, HalfsizeY - objsize.z));
+        */
 
         //if (pos.x < 0.1f) pos.x = 0.1f;
         //
